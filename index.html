@@ -141,7 +141,7 @@
       </section>
       <aside class="side">
         <section class="card"><div class="card-title gold-text"><span>🏆 雲端榮譽榜前三名</span><button class="link" id="hofLink">查看前10名</button></div><div id="miniHof"></div></section>
-        <section class="card"><div class="card-title"><span>✧ 實時戰況動態</span></div><div class="feed" id="feed">按「開始」後，用方向鍵或 W A S D 操控貪食蛇。</div></section>
+        <section class="card"><div class="card-title"><span>✧ 實時戰況動態</span></div><div class="feed" id="feed">按「開始」或方向鍵，操控貪食蛇依序食字。</div></section>
         <section class="card"><div class="card-title"><span>🎓 數學概念詳解</span><span id="detailNo"></span></div><div class="math-detail"><div id="detailDefinition"></div><div class="example" id="example"></div></div></section>
       </aside>
     </main>
@@ -152,7 +152,7 @@
 
   <div class="modal" id="hofModal"><div class="modal-box wide"><button class="close" data-close="hofModal">×</button><h2>🏆 雲端榮譽榜 • Hall of Fame</h2><p>全班頭 10 名排行榜：以最高得分優先，若得分相同則以較短完成時間排名。全班實時同步！</p><div id="hofList"></div></div></div>
 
-  <div class="modal" id="guideModal"><div class="modal-box"><button class="close" data-close="guideModal">×</button><h2>遊戲規則</h2><p><b>1. 先聽導讀：</b>每個新單字開始時，系統會先讀出英文及廣東話解釋。</p><p><b>2. 順序食字：</b>吃下與頂端高亮字母相同的格子。正確可得分，並移至下一個字母。</p><p><b>3. 扣血機制：</b>撞牆或誤吃字母會扣 1 條生命 (♥)。共 3 條生命，全部耗盡才會遊戲結束。</p><p><b>4. Hall of Fame：</b>完成 7 個生字或失去所有生命後，成績會記錄至全班雲端排行榜。</p></div></div>
+  <div class="modal" id="guideModal"><div class="modal-box"><button class="close" data-close="guideModal">×</button><h2>遊戲規則</h2><p><b>1. 先聽導讀：</b>每個新單字開始時，系統會先讀出英文及廣東話解釋。</p><p><b>2. 順序食字：</b>吃下與頂端高亮字母相同的格子。正確可得分，並移至下一個字母。</p><p><b>3. 扣血機制：</b>撞牆或誤吃字母會扣 1 條生命 (♥)。共 3 條生命，扣血後可重新從中央發車。</p><p><b>4. Hall of Fame：</b>完成 7 個生字或失去所有生命後，成績會記錄至全班雲端排行榜。</p></div></div>
 
   <div class="modal" id="endModal"><div class="modal-box"><button class="close" data-close="endModal">×</button><h2 id="endTitle">遊戲結束</h2><p id="endText"></p><div class="end-summary"><div class="summary">最終得分<strong id="endScore">0</strong></div><div class="summary">完成生字<strong id="endWords">0</strong></div><div class="summary">失誤次數<strong id="endErrors">0</strong></div><div class="summary">遊戲時間<strong id="endTime">0秒</strong></div></div><button class="button primary form-submit" id="openHofEnd">查看 Hall of Fame</button><button class="button form-submit" id="playAgain">再次挑戰</button></div></div>
 
@@ -207,19 +207,43 @@
   function pointTaken(p, occupied=[]){ return occupied.some(q=>q.x===p.x&&q.y===p.y); }
   function randomSpot(occupied=[]){ let p; do{p={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}}while(pointTaken(p,occupied));return p; }
   
+  // 修正：相容舊瀏覽器的圓角畫法，避免畫圖崩潰
+  function roundRect(c, x, y, w, h, r) {
+    c.beginPath();
+    if (typeof c.roundRect === 'function') {
+      c.roundRect(x, y, w, h, r);
+    } else {
+      c.moveTo(x + r, y);
+      c.arcTo(x + w, y, x + w, y + h, r);
+      c.arcTo(x + w, y + h, x, y + h, r);
+      c.arcTo(x, y + h, x, y, r);
+      c.arcTo(x, y, x + w, y, r);
+      c.closePath();
+    }
+  }
+
   function respawnSnake(){
     const midY = Math.floor(ROWS/2);
     state.snake = [{x:4, y:midY}, {x:3, y:midY}, {x:2, y:midY}];
     state.direction = {x:1, y:0};
     state.pending = {x:1, y:0};
+
+    // 清除復位前方的字母，防止蛇一發車就再次誤吃或撞上
+    state.foods.forEach(f => {
+      if (f.y === midY && f.x >= 2 && f.x <= 7) {
+        const newPos = randomSpot(state.snake.concat(state.foods));
+        f.x = newPos.x;
+        f.y = newPos.y;
+      }
+    });
   }
 
   function resetWord(){ 
     const w=normal(WORDS[state.wordIndex].word); 
     state.targetIndex=0; 
+    state.foods=[]; 
     respawnSnake();
     const occupied=[...state.snake];
-    state.foods=[]; 
     for(let i=0;i<w.length;i++){
       const p=randomSpot(occupied.concat(state.foods));
       state.foods.push({...p,char:w[i],index:i});
@@ -227,26 +251,116 @@
     render(); 
   }
 
-  function resetGame(){ stop(); state={wordIndex:0,targetIndex:0,score:0,combo:0,lives:3,errors:0,completed:0,snake:[],direction:{x:1,y:0},pending:{x:1,y:0},foods:[],running:false};savedRun=false;elapsed=0; resetWord(); notify('準備開始：按「開始 / 繼續」，然後依序食字。'); }
+  function resetGame(){ 
+    stop(); 
+    state={wordIndex:0,targetIndex:0,score:0,combo:0,lives:3,errors:0,completed:0,snake:[],direction:{x:1,y:0},pending:{x:1,y:0},foods:[],running:false};
+    savedRun=false;
+    elapsed=0; 
+    startedAt=0;
+    resetWord(); 
+    notify('遊戲重置完成！按方向鍵或「開始」繼續。'); 
+  }
+
   function current(){ return WORDS[state.wordIndex]; }
   
-  function render(){ const w=current(), letters=normal(w.word);$('wordCount').textContent=`目標生字 (${state.wordIndex+1}/${WORDS.length})`;$('word').textContent=w.word;$('meaning').textContent=w.chinese;$('definition').textContent=w.definition;$('detailNo').textContent=`單字 ${state.wordIndex+1} of ${WORDS.length}`;$('detailDefinition').textContent=w.definition;$('example').textContent=w.example;$('score').textContent=state.score;$('combo').textContent='x'+state.combo;$('lives').textContent='♥'.repeat(state.lives)+'♡'.repeat(3-state.lives);$('target').innerHTML=state.targetIndex<letters.length?`請先吃下第 <b>${state.targetIndex+1}</b> 個字母：<b style="font-size:16px">${letters[state.targetIndex]}</b>`:'完成本字！';$('sequence').innerHTML=letters.split('').map((c,i)=>`<span class="letter-token ${i<state.targetIndex?'done':i===state.targetIndex?'current':''}">${c}<small>${i+1}</small></span>`).join('');draw(); }
-  
-  function draw(){ const width=board.width,height=board.height;ctx.clearRect(0,0,width,height);ctx.fillStyle='#06111f';ctx.fillRect(0,0,width,height);ctx.strokeStyle='#16334a';ctx.lineWidth=1;for(let x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*CELL,0);ctx.lineTo(x*CELL,height);ctx.stroke();}for(let y=0;y<=ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*CELL);ctx.lineTo(width,y*CELL);ctx.stroke();}
-    state.foods.forEach(f=>{const px=f.x*CELL,py=f.y*CELL,isTarget=f.index===state.targetIndex;if(isTarget){ctx.shadowColor='#38d8ff';ctx.shadowBlur=16;}ctx.fillStyle=isTarget?'#2cdaff':'#263a52';ctx.strokeStyle=isTarget?'#bdf6ff':'#7d91a7';ctx.lineWidth=2;roundRect(ctx,px+6,py+6,CELL-12,CELL-12,8);ctx.fill();ctx.stroke();ctx.shadowBlur=0;ctx.fillStyle=isTarget?'#001521':'#e0ecf7';ctx.font='bold 18px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(f.char,px+20,py+20);ctx.font='10px Arial';ctx.fillStyle=isTarget?'#054b64':'#a6b4c5';ctx.fillText(String(f.index+1),px+29,py+11);});
-    state.snake.forEach((s,i)=>{const px=s.x*CELL,py=s.y*CELL;ctx.fillStyle=i===0?'#39e4b0':'#13a985';ctx.strokeStyle=i===0?'#c5ffe9':'#62e0c3';ctx.lineWidth=2;roundRect(ctx,px+3,py+3,CELL-6,CELL-6,8);ctx.fill();ctx.stroke();if(i===0){ctx.fillStyle='#00251e';let e1={x:px+28,y:py+12},e2={x:px+28,y:py+28};if(state.direction.x===1){e1={x:px+28,y:py+12};e2={x:px+28,y:py+28};}else if(state.direction.x===-1){e1={x:px+12,y:py+12};e2={x:px+12,y:py+28};}else if(state.direction.y===-1){e1={x:px+12,y:py+12};e2={x:px+28,y:py+12};}else if(state.direction.y===1){e1={x:px+12,y:py+28};e2={x:px+28,y:py+28};}ctx.beginPath();ctx.arc(e1.x,e1.y,3,0,Math.PI*2);ctx.arc(e2.x,e2.y,3,0,Math.PI*2);ctx.fill();}});
-    if(!state.running){ctx.fillStyle='rgba(3,13,25,.65)';ctx.fillRect(0, height/2-45,width,90);ctx.fillStyle='#64e6ff';ctx.font='900 24px sans-serif';ctx.textAlign='center';ctx.fillText('按方向鍵 [↑ ↓ ← →] 或 [W A S D] 開始！',width/2,height/2-6);ctx.fillStyle='#c4d3e2';ctx.font='13px sans-serif';ctx.fillText('依序尋找並吃掉英文字母，食錯扣血 (♥)！',width/2,height/2+20);}
+  function render(){ 
+    const w=current(), letters=normal(w.word);
+    $('wordCount').textContent=`目標生字 (${state.wordIndex+1}/${WORDS.length})`;
+    $('word').textContent=w.word;
+    $('meaning').textContent=w.chinese;
+    $('definition').textContent=w.definition;
+    $('detailNo').textContent=`單字 ${state.wordIndex+1} of ${WORDS.length}`;
+    $('detailDefinition').textContent=w.definition;
+    $('example').textContent=w.example;
+    $('score').textContent=state.score;
+    $('combo').textContent='x'+state.combo;
+    $('lives').textContent='♥'.repeat(Math.max(0, state.lives))+'♡'.repeat(Math.max(0, 3-state.lives));
+    $('target').innerHTML=state.targetIndex<letters.length?`請先吃下第 <b>${state.targetIndex+1}</b> 個字母：<b style="font-size:16px">${letters[state.targetIndex]}</b>`:'完成本字！';
+    $('sequence').innerHTML=letters.split('').map((c,i)=>`<span class="letter-token ${i<state.targetIndex?'done':i===state.targetIndex?'current':''}">${c}<small>${i+1}</small></span>`).join('');
+    draw(); 
   }
-  function roundRect(c,x,y,w,h,r){c.beginPath();c.roundRect(x,y,w,h,r);}
-  function setDirection(x,y){if(!state.running)start();if(x===-state.direction.x&&y===-state.direction.y)return;state.pending={x,y};}
+  
+  function draw(){ 
+    const width=board.width,height=board.height;
+    ctx.clearRect(0,0,width,height);
+    ctx.fillStyle='#06111f';
+    ctx.fillRect(0,0,width,height);
+    ctx.strokeStyle='#16334a';
+    ctx.lineWidth=1;
+    for(let x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*CELL,0);ctx.lineTo(x*CELL,height);ctx.stroke();}
+    for(let y=0;y<=ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*CELL);ctx.lineTo(width,y*CELL);ctx.stroke();}
+
+    // 畫食物
+    state.foods.forEach(f=>{
+      const px=f.x*CELL,py=f.y*CELL,isTarget=f.index===state.targetIndex;
+      if(isTarget){ctx.shadowColor='#38d8ff';ctx.shadowBlur=16;}
+      ctx.fillStyle=isTarget?'#2cdaff':'#263a52';
+      ctx.strokeStyle=isTarget?'#bdf6ff':'#7d91a7';
+      ctx.lineWidth=2;
+      roundRect(ctx,px+6,py+6,CELL-12,CELL-12,8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.shadowBlur=0;
+      ctx.fillStyle=isTarget?'#001521':'#e0ecf7';
+      ctx.font='bold 18px Arial';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText(f.char,px+20,py+20);
+      ctx.font='10px Arial';
+      ctx.fillStyle=isTarget?'#054b64':'#a6b4c5';
+      ctx.fillText(String(f.index+1),px+29,py+11);
+    });
+
+    // 畫蛇身
+    state.snake.forEach((s,i)=>{
+      const px=s.x*CELL,py=s.y*CELL;
+      ctx.fillStyle=i===0?'#39e4b0':'#13a985';
+      ctx.strokeStyle=i===0?'#c5ffe9':'#62e0c3';
+      ctx.lineWidth=2;
+      roundRect(ctx,px+3,py+3,CELL-6,CELL-6,8);
+      ctx.fill();
+      ctx.stroke();
+      if(i===0){
+        ctx.fillStyle='#00251e';
+        let e1={x:px+28,y:py+12},e2={x:px+28,y:py+28};
+        if(state.direction.x===1){e1={x:px+28,y:py+12};e2={x:px+28,y:py+28};}
+        else if(state.direction.x===-1){e1={x:px+12,y:py+12};e2={x:px+12,y:py+28};}
+        else if(state.direction.y===-1){e1={x:px+12,y:py+12};e2={x:px+28,y:py+12};}
+        else if(state.direction.y===1){e1={x:px+12,y:py+28};e2={x:px+28,y:py+28};}
+        ctx.beginPath();
+        ctx.arc(e1.x,e1.y,3,0,Math.PI*2);
+        ctx.arc(e2.x,e2.y,3,0,Math.PI*2);
+        ctx.fill();
+      }
+    });
+
+    if(!state.running){
+      ctx.fillStyle='rgba(3,13,25,.75)';
+      ctx.fillRect(0, height/2-45,width,90);
+      ctx.fillStyle='#64e6ff';
+      ctx.font='900 22px sans-serif';
+      ctx.textAlign='center';
+      ctx.fillText('按方向鍵 [↑ ↓ ← →] 或 [W A S D] 開始 / 繼續',width/2,height/2-6);
+      ctx.fillStyle='#c4d3e2';
+      ctx.font='13px sans-serif';
+      ctx.fillText('撞牆已自動移回中央，扣 1 條生命 (♥)',width/2,height/2+20);
+    }
+  }
+
+  function setDirection(x,y){
+    if(state.lives<=0) resetGame();
+    if(!state.running) start();
+    if(x===-state.direction.x&&y===-state.direction.y)return;
+    state.pending={x,y};
+  }
   
   function tick(){
     state.direction=state.pending;
     const head={x:state.snake[0].x+state.direction.x, y:state.snake[0].y+state.direction.y};
     
-    // 撞牆或撞到自己 -> 扣血並復位，不直接死掉
+    // 撞牆或撞到自己 -> 扣血、復位並暫停
     if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||pointTaken(head,state.snake)){
-      deductLife('撞到障礙！扣 1 條生命 (♥)', true);
+      deductLife('撞到牆壁 / 身體！扣 1 條生命 (♥)', true);
       return;
     }
 
@@ -280,18 +394,17 @@
           return;
         }
 
-        // 移至下一個生字，自動讀出下一個字的英文與中文！
         state.wordIndex++;
         resetWord();
         setTimeout(()=>{
           start();
-          speakCurrent(); // 自動朗讀新生字
+          speakCurrent();
         }, 500);
         return;
       }
     } else {
       // 食錯字母 -> 扣血及扣50分
-      state.snake.pop(); // 唔會變長
+      state.snake.pop(); 
       deductLife(`食錯字母！需要 <b>${normal(current().word)[state.targetIndex]}</b>，扣 1 條生命 (♥) 及 50 分。`, false);
       return;
     }
@@ -304,27 +417,32 @@
     state.combo=0;
     state.errors++;
     beep(150,.16);
-    notify(msg, true);
 
     if(state.lives<=0){
+      notify('生命值耗盡！遊戲結束。', true);
       render();
       finish(false);
       return;
     }
 
     if(resetPosition){
-      respawnSnake(); // 撞牆後重置貪食蛇到中央位置，繼續玩！
+      respawnSnake();
+      stop(); // 暫停遊戲，等待玩家準備好按按鍵繼續
+      notify(`${msg} 貪食蛇已移回中央位置，按方向鍵繼續！`, true);
+    } else {
+      notify(msg, true);
     }
     render();
   }
 
   function start(){
+    if(state.lives<=0) resetGame();
     if(state.running)return;
     state.running=true;
     if(!startedAt)startedAt=Date.now();
     timer=setInterval(tick,speed);
     render();
-    speakCurrent(); // 每次開始時朗讀
+    speakCurrent();
   }
 
   function stop(){state.running=false;if(timer){clearInterval(timer);timer=null;}render();}
@@ -386,7 +504,7 @@
   $('voiceButton').onclick=speakCurrent;
   $('speakButton').onclick=speakCurrent;
   $('openHofEnd').onclick=()=>{setModal('endModal',false);setModal('hofModal',true)};
-  $('playAgain').onclick=()=>{setModal('endModal',false);startedAt=0;resetGame();};
+  $('playAgain').onclick=()=>{setModal('endModal',false);resetGame();};
   $('soundButton').onclick=()=>{muted=!muted;$('soundButton').textContent=muted?'🔇 靜音':'🔊 音效';if(muted)speechSynthesis?.cancel();};
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>setModal(b.dataset.close,false));
   document.querySelectorAll('[data-speed]').forEach(b=>b.onclick=()=>{speed=Number(b.dataset.speed);document.querySelectorAll('[data-speed]').forEach(x=>x.classList.toggle('active',x===b));if(state.running){clearInterval(timer);timer=setInterval(tick,speed);}});
