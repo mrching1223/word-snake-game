@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>數學詞彙貪食蛇 | Math Word Snake</title>
-  <!-- 載入 Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
@@ -55,13 +54,14 @@
     .stat { min-width: 87px; padding: 7px 10px; border: 1px solid #263d57; border-radius: 12px; background:#09192a; }
     .stat span { display:block; font-size:10px; color:#8fa4bf; }
     .stat strong { display:block; margin-top:2px; font: 800 18px monospace; color:var(--gold); }
-    .sequence { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px solid #18344b; }
-    .sequence-label { color:var(--muted); font-size:13px; }
+    .sequence { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px solid #18344b; }
+    .sequence-label { color:var(--muted); font-size:13px; white-space:nowrap; }
+    #sequence { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
     .letter-token { width:32px; height:38px; display:grid; place-items:center; position:relative; border-radius:8px; border:1px solid #31455c; background:#132338; color:#9db1c7; font-size:16px; font-weight:900; }
     .letter-token small { position:absolute; bottom:1px; font-size:8px; font-weight:400; color:#7091ac; }
     .letter-token.current { color:#00131c; background:var(--cyan); border-color:#9bf1ff; box-shadow:0 0 0 4px #1cd4ff35,0 0 18px #15c9f488; transform:scale(1.1); }
     .letter-token.done { color:#b5ffe2; background:#0e634e; border-color:#49deb0; }
-    .target { margin-left:auto; color:#b9ecff; font-size:13px; border:1px solid #24657c; background:#072d41; padding:8px 11px; border-radius:99px; }
+    .target { margin-left:auto; color:#b9ecff; font-size:13px; border:1px solid #24657c; background:#072d41; padding:8px 11px; border-radius:99px; white-space:nowrap; }
     .layout { display:grid; grid-template-columns:minmax(0,1.85fr) minmax(290px,1fr); gap:18px; margin-top:18px; }
     .board-wrap, .card { border:1px solid #203954; background:var(--panel); border-radius:18px; box-shadow:0 12px 34px #000a; }
     .board-wrap { overflow:hidden; }
@@ -69,7 +69,7 @@
     .controls { padding:13px; display:flex; gap:8px; align-items:center; justify-content:space-between; flex-wrap:wrap; border-top:1px solid #23445c; }
     .controls-left, .speed { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
     .speed { font-size:12px; color:var(--muted); }
-    .small-btn { border-radius:9px; padding:7px 10px; border:1px solid #29435d; color:#bdccdc; background:#102033; font-size:12px; }
+    .small-btn { border-radius:99px; padding:7px 12px; border:1px solid #29435d; color:#bdccdc; background:#102033; font-size:12px; }
     .small-btn.active { color:#8ff1ff; border-color:#30cbe9; background:#093348; }
     .side { display:flex; flex-direction:column; gap:14px; }
     .card { padding:15px; }
@@ -161,7 +161,6 @@
 
 <script>
 (() => {
-  // 已填入您的 Firebase 設定資訊
   const firebaseConfig = {
     apiKey: "AIzaSyCuFWzNxViJox3m5FyKMYkFZia1syFKboc",
     databaseURL: "https://math-word-snake-684ed-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -171,7 +170,6 @@
   const db = firebase.database();
   let cloudHof = [];
 
-  // 實時收聽雲端排行榜資料
   db.ref('snake_hof').on('value', (snapshot) => {
     const data = snapshot.val() || {};
     cloudHof = Object.values(data)
@@ -227,7 +225,6 @@
   function start(){if(state.running)return;state.running=true;if(!startedAt)startedAt=Date.now();timer=setInterval(tick,speed);render();speakCurrent();}
   function stop(){state.running=false;if(timer){clearInterval(timer);timer=null;}render();}
   function finish(victory){stop(); if(!savedRun){elapsed=Math.max(1,Math.round((Date.now()-startedAt)/1000));const accuracy=Math.max(0,Math.round(((state.completed*7)/(state.completed*7+state.errors||1))*100));const entry={name:student?.name||'未命名學生',className:student?.className||'-',studentNo:student?.studentNo||'-',score:state.score,completed:state.completed,time:elapsed,accuracy,createdAt:Date.now()};
-    // 上傳成績至 Firebase Realtime Database
     db.ref('snake_hof').push(entry);
     savedRun=true;
   }$('endTitle').textContent=victory?'🏆 恭喜完成全部生字！':'遊戲結束';$('endText').textContent=victory?'你已完成 7 個數學英語詞彙，成績已寫入全班雲端 Hall of Fame。':'生命值耗盡，成績已寫入全班雲端 Hall of Fame，下一次可再挑戰更高排名。';$('endScore').textContent=state.score;$('endWords').textContent=state.completed+' 詞';$('endErrors').textContent=state.errors+' 次';$('endTime').textContent=Math.floor(elapsed/60)+'分'+elapsed%60+'秒';setModal('endModal',true);}
