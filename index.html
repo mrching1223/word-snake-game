@@ -116,7 +116,7 @@
     <header class="header">
       <div class="brand">
         <div class="brand-icon">蛇</div>
-        <div><h1>數學詞彙貪食蛇 • Math Word Snake</h1><p class="tagline">按字母次序食字・男孩英語發音・廣東話導讀・全班雲端 Hall of Fame</p></div>
+        <div><h1>數學詞彙貪食蛇 • Math Word Snake</h1><p class="tagline">按字母數量排序・男孩語音雙語導讀・5條生命值・全班雲端 Hall of Fame</p></div>
       </div>
       <div class="header-actions">
         <button class="student-chip" id="studentButton">👤 <span id="studentName">設定學生資料</span></button>
@@ -129,18 +129,18 @@
     <section class="word-panel">
       <div class="word-top">
         <div class="word-main">
-          <div class="word-info"><div class="eyebrow" id="wordCount">目標生字 (1/7)</div><div class="word" id="word">Identity</div><button class="link" id="speakButton">🔊 再次朗讀</button></div>
-          <div><div class="meaning" id="meaning">恆等式</div><span class="voice-badge" id="voiceStatus">● Puck 風格男孩英語＋粵語</span><div class="definition" id="definition"></div></div>
+          <div class="word-info"><div class="eyebrow" id="wordCount">目標生字 (1/7)</div><div class="word" id="word">Constant</div><button class="link" id="speakButton">🔊 再次朗讀</button></div>
+          <div><div class="meaning" id="meaning">常數</div><span class="voice-badge" id="voiceStatus">● 男孩聲音：粵語 + 英語</span><div class="definition" id="definition"></div></div>
         </div>
-        <div class="stats"><div class="stat"><span>得分 SCORE</span><strong id="score">0</strong></div><div class="stat"><span>連擊 COMBO</span><strong id="combo">x0</strong></div><div class="stat"><span>生命 LIVES</span><strong id="lives">♥♥♥</strong></div></div>
+        <div class="stats"><div class="stat"><span>得分 SCORE</span><strong id="score">0</strong></div><div class="stat"><span>連擊 COMBO</span><strong id="combo">x0</strong></div><div class="stat"><span>生命 LIVES</span><strong id="lives">♥♥♥♥♥</strong></div></div>
       </div>
-      <div class="sequence"><span class="sequence-label">拼字進度：</span><div id="sequence"></div><span class="target" id="target">請先吃下第 1 個字母：I</span></div>
+      <div class="sequence"><span class="sequence-label">拼字進度：</span><div id="sequence"></div><span class="target" id="target">請先吃下第 1 個字母</span></div>
     </section>
 
     <main class="layout">
       <section class="board-wrap">
         <canvas id="board" width="720" height="540" aria-label="貪食蛇棋盤"></canvas>
-        <div class="controls"><div class="controls-left"><button class="button primary" id="startButton">▶ 開始 / 繼續</button><button class="button" id="restartButton">↻ 重玩</button><button class="button" id="voiceButton">🔊 男孩英語／粵語</button></div><div class="speed"><span>速度：</span><button class="small-btn" data-speed="200">休閒</button><button class="small-btn active" data-speed="145">標準</button><button class="small-btn" data-speed="100">挑戰</button></div></div>
+        <div class="controls"><div class="controls-left"><button class="button primary" id="startButton">▶ 開始 / 繼續</button><button class="button" id="restartButton">↻ 重玩</button><button class="button" id="voiceButton">🔊 男孩朗讀</button></div><div class="speed"><span>速度：</span><button class="small-btn" data-speed="200">休閒</button><button class="small-btn active" data-speed="145">標準</button><button class="small-btn" data-speed="100">挑戰</button></div></div>
       </section>
       <aside class="side">
         <section class="card"><div class="card-title gold-text"><span>🏆 雲端榮譽榜前三名</span><button class="link" id="hofLink">查看前10名</button></div><div id="miniHof"></div></section>
@@ -148,20 +148,19 @@
         <section class="card"><div class="card-title"><span>🎓 數學概念詳解</span><span id="detailNo"></span></div><div class="math-detail"><div id="detailDefinition"></div><div class="example" id="example"></div></div></section>
       </aside>
     </main>
-    <p class="tip">操作提示：[W A S D] 或 [↑ ↓ ← →] 轉向・[空白鍵] 暫停・每局完成後，成績自動寫入全班雲端共享的 Hall of Fame。</p>
+    <p class="tip">操作提示：[W A S D] 或 [↑ ↓ ← →] 轉向・[空白鍵] 暫停・每局玩家擁有 5 條生命，每當生字出現時會有男孩語音朗讀中英文。</p>
   </div>
 
   <div class="modal" id="studentModal"><div class="modal-box"><button class="close" data-close="studentModal">×</button><h2>學生登入 • 進入遊戲</h2><p>請輸入學生資料。完成遊戲後，成績會自動加入全班雲端共享 Hall of Fame 頭 10 名。</p><form id="studentForm"><div class="form-grid"><div class="field full"><label>學生姓名 *</label><input id="inputName" required placeholder="例如：陳大文 (Chan Tai Man)" /></div><div class="field"><label>班別 *</label><input id="inputClass" required value="1A" placeholder="例如：1A" /></div><div class="field"><label>學號 *</label><input id="inputNo" required placeholder="例如：08" /></div></div><button class="button primary form-submit" type="submit">確認並開始挑戰 →</button></form></div></div>
 
   <div class="modal" id="hofModal"><div class="modal-box wide"><button class="close" data-close="hofModal">×</button><h2>🏆 雲端榮譽榜 • Hall of Fame</h2><p>全班頭 10 名排行榜：以最高得分優先，若得分相同則以較短完成時間排名。全班實時同步！</p><div id="hofList"></div></div></div>
 
-  <div class="modal" id="guideModal"><div class="modal-box"><button class="close" data-close="guideModal">×</button><h2>遊戲規則</h2><p><b>1. 先聽導讀：</b>每個新單字出現時，系統均會先朗讀英文及廣東話解釋。</p><p><b>2. 順序食字：</b>吃下與頂端高亮字母相同的格子。正確可得分，並移至下一個字母。</p><p><b>3. 食錯扣分：</b>誤吃其他字母會扣 50 分、失去一條生命並中斷連擊。</p><p><b>4. Hall of Fame：</b>完成 7 個生字或失去所有生命後，成績會記錄至全班雲端排行榜。</p></div></div>
+  <div class="modal" id="guideModal"><div class="modal-box"><button class="close" data-close="guideModal">×</button><h2>遊戲規則</h2><p><b>1. 生字男孩朗讀：</b>每當有生字出現時，先由男孩語音自動朗讀英文字及中文解釋。</p><p><b>2. 5 條生命：</b>每名玩家有 5 條生命，誤吃錯誤字母會扣除 1 條生命及 50 分。</p><p><b>3. 字母數量排序：</b>生字依據字母數量由少至多排列，字母最少的三字放在最前面。</p><p><b>4. Hall of Fame：</b>完成所有生字或生命耗盡後，成績會寫入雲端排行榜。</p></div></div>
 
   <div class="modal" id="endModal"><div class="modal-box"><button class="close" data-close="endModal">×</button><h2 id="endTitle">遊戲結束</h2><p id="endText"></p><div class="end-summary"><div class="summary">最終得分<strong id="endScore">0</strong></div><div class="summary">完成生字<strong id="endWords">0</strong></div><div class="summary">失誤次數<strong id="endErrors">0</strong></div><div class="summary">遊戲時間<strong id="endTime">0秒</strong></div></div><button class="button primary form-submit" id="openHofEnd">查看 Hall of Fame</button><button class="button form-submit" id="playAgain">再次挑戰</button></div></div>
 
 <script>
 (() => {
-  // Firebase 設定
   const firebaseConfig = {
     apiKey: "AIzaSyCuFWzNxViJox3m5FyKMYkFZia1syFKboc",
     databaseURL: "https://math-word-snake-684ed-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -171,7 +170,6 @@
   const db = firebase.database();
   let cloudHof = [];
 
-  // 實時收聽雲端排行榜資料
   db.ref('snake_hof').on('value', (snapshot) => {
     const data = snapshot.val() || {};
     cloudHof = Object.values(data)
@@ -180,8 +178,8 @@
     renderHof();
   });
 
-  // 按字母較少排序 (8 -> 8 -> 8 -> 9 -> 9 -> 10 -> 13)
-  const WORDS = [
+  // 原始單字清單
+  const RAW_WORDS = [
     { word:'Identity', chinese:'恆等式', definition:'不論字母取任何容許數值，等式兩邊永遠相等的式子。', example:'例如：(a + b)² = a² + 2ab + b²。' },
     { word:'Constant', chinese:'常數', definition:'在某個數學情境中數值固定、不會隨變數改變的量。', example:'例如：在 3x + 8 中，8 是常數。' },
     { word:'Grouping', chinese:'分組', definition:'利用括號把算式中需要優先處理的部分組合起來。', example:'例如：a(b + c) 中，(b + c) 是一個分組。' },
@@ -190,15 +188,21 @@
     { word:'Expression', chinese:'代數式', definition:'由數字、字母、運算符號及括號組成、用來表示數學關係的式子。', example:'例如：3x + 7 是一個代數式。' },
     { word:'Factorization', chinese:'因式分解', definition:'把一個代數式改寫成幾個因式相乘形式的運算過程。', example:'例如：x² − 9 = (x − 3)(x + 3)。' }
   ];
+
+  function normal(word){ return word.replace(/[^a-z]/gi,'').toUpperCase(); }
+
+  // 按字母數量（長度）由小到大排序，確保字母越少的三字放在最前
+  const WORDS = [...RAW_WORDS].sort((a, b) => normal(a.word).length - normal(b.word).length);
+
   const COLS=18, ROWS=14, CELL=40;
   const board=document.getElementById('board'), ctx=board.getContext('2d');
   const $=id=>document.getElementById(id);
   const profileKey='math_word_snake_student_profile_v1';
   let student=JSON.parse(localStorage.getItem(profileKey)||'null');
   let muted=false, speed=145, timer=null, startedAt=0, elapsed=0, savedRun=false;
-  let state={wordIndex:0, targetIndex:0, score:0, combo:0, lives:3, errors:0, completed:0, snake:[], direction:{x:1,y:0}, pending:{x:1,y:0}, foods:[], running:false};
+  // 設置玩家有 5 條命
+  let state={wordIndex:0, targetIndex:0, score:0, combo:0, lives:5, errors:0, completed:0, snake:[], direction:{x:1,y:0}, pending:{x:1,y:0}, foods:[], running:false};
 
-  function normal(word){ return word.replace(/[^a-z]/gi,'').toUpperCase(); }
   function getHof(){ return cloudHof; }
   function setModal(id, open){ $(id).classList.toggle('open',open); }
   function showStudent(){ $('inputName').value=student?.name||''; $('inputClass').value=student?.className||'1A'; $('inputNo').value=student?.studentNo||''; setModal('studentModal',true); }
@@ -212,8 +216,8 @@
   function notify(text,error=false){ $('feed').innerHTML=`<div class="event ${error?'error':''}">${text}</div>`; }
   function pointTaken(p, occupied=[]){ return occupied.some(q=>q.x===p.x&&q.y===p.y); }
   function randomSpot(occupied=[]){ let p; do{p={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}}while(pointTaken(p,occupied));return p; }
-
-  // 每次生字出現時自動觸發朗讀
+  
+  // 生字出現時觸發 resetWord，同時自動調用男孩朗讀
   function resetWord(){ 
     const w=normal(WORDS[state.wordIndex].word); 
     state.targetIndex=0; 
@@ -227,70 +231,268 @@
       state.foods.push({...p,char:w[i],index:i});
     } 
     render(); 
-    // 每當新字出現即朗讀
-    speakCurrent(); 
+    speakCurrent(); // 每次生字出現時，先由男孩朗讀中英文字
   }
 
-  function resetGame(){ stop(); state={wordIndex:0,targetIndex:0,score:0,combo:0,lives:3,errors:0,completed:0,snake:[],direction:{x:1,y:0},pending:{x:1,y:0},foods:[],running:false};savedRun=false;elapsed=0; resetWord(); notify('準備開始：按「開始 / 繼續」，然後依序食字。'); }
+  function resetGame(){ stop(); state={wordIndex:0,targetIndex:0,score:0,combo:0,lives:5,errors:0,completed:0,snake:[],direction:{x:1,y:0},pending:{x:1,y:0},foods:[],running:false};savedRun=false;elapsed=0; resetWord(); notify('準備開始：按「開始 / 繼續」，然後依序食字。'); }
   function current(){ return WORDS[state.wordIndex]; }
-  function render(){ const w=current(), letters=normal(w.word);$('wordCount').textContent=`目標生字 (${state.wordIndex+1}/${WORDS.length})`;$('word').textContent=w.word;$('meaning').textContent=w.chinese;$('definition').textContent=w.definition;$('detailNo').textContent=`單字 ${state.wordIndex+1} of ${WORDS.length}`;$('detailDefinition').textContent=w.definition;$('example').textContent=w.example;$('score').textContent=state.score;$('combo').textContent='x'+state.combo;$('lives').textContent='♥'.repeat(state.lives)+'♡'.repeat(3-state.lives);$('target').innerHTML=state.targetIndex<letters.length?`請先吃下第 <b>${state.targetIndex+1}</b> 個字母：<b style="font-size:17px">${letters[state.targetIndex]}</b>`:'完成本字！';$('sequence').innerHTML=letters.split('').map((c,i)=>`<span class="letter-token ${i<state.targetIndex?'done':i===state.targetIndex?'current':''}">${c}<small>${i+1}</small></span>`).join('');draw(); }
-  function draw(){ const width=board.width,height=board.height;ctx.clearRect(0,0,width,height);ctx.fillStyle='#06111f';ctx.fillRect(0,0,width,height);ctx.strokeStyle='#16334a';ctx.lineWidth=1;for(let x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*CELL,0);ctx.lineTo(x*CELL,height);ctx.stroke();}for(let y=0;y<=ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*CELL);ctx.lineTo(width,y*CELL);ctx.stroke();}
-    const target=normal(current().word)[state.targetIndex];state.foods.forEach(f=>{const px=f.x*CELL,py=f.y*CELL,isTarget=f.index===state.targetIndex;if(isTarget){ctx.shadowColor='#38d8ff';ctx.shadowBlur=18;}ctx.fillStyle=isTarget?'#2cdaff':'#263a52';ctx.strokeStyle=isTarget?'#bdf6ff':'#7d91a7';ctx.lineWidth=2;roundRect(ctx,px+7,py+7,CELL-14,CELL-14,8);ctx.fill();ctx.stroke();ctx.shadowBlur=0;ctx.fillStyle=isTarget?'#001521':'#e0ecf7';ctx.font='bold 19px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(f.char,px+20,py+20);ctx.font='10px Arial';ctx.fillStyle=isTarget?'#054b64':'#a6b4c5';ctx.fillText(String(f.index+1),px+29,py+12);});
-    state.snake.forEach((s,i)=>{const px=s.x*CELL,py=s.y*CELL;ctx.fillStyle=i===0?'#39e4b0':'#13a985';ctx.strokeStyle=i===0?'#c5ffe9':'#62e0c3';ctx.lineWidth=2;roundRect(ctx,px+3,py+3,CELL-6,CELL-6,9);ctx.fill();ctx.stroke();if(i===0){ctx.fillStyle='#00251e';ctx.beginPath();ctx.arc(px+28,py+13,3,0,7);ctx.arc(px+28,py+27,3,0,7);ctx.fill();}});
-    if(!state.running){ctx.fillStyle='rgba(3,13,25,.58)';ctx.fillRect(0, height/2-45,width,90);ctx.fillStyle='#64e6ff';ctx.font='900 27px sans-serif';ctx.textAlign='center';ctx.fillText('按方向鍵 [↑ ↓ ← →] 或 [W A S D] 開始！',width/2,height/2-7);ctx.fillStyle='#c4d3e2';ctx.font='14px sans-serif';ctx.fillText('依序尋找並吃掉英文字母，食錯扣 50 分！',width/2,height/2+22);}
+  
+  function render(){ 
+    const w=current(), letters=normal(w.word);
+    $('wordCount').textContent=`目標生字 (${state.wordIndex+1}/${WORDS.length})`;
+    $('word').textContent=w.word;
+    $('meaning').textContent=w.chinese;
+    $('definition').textContent=w.definition;
+    $('detailNo').textContent=`單字 ${state.wordIndex+1} of ${WORDS.length}`;
+    $('detailDefinition').textContent=w.definition;
+    $('example').textContent=w.example;
+    $('score').textContent=state.score;
+    $('combo').textContent='x'+state.combo;
+    // 渲染 5 條命
+    $('lives').textContent='♥'.repeat(state.lives)+'♡'.repeat(5-state.lives);
+    $('target').innerHTML=state.targetIndex<letters.length?`請先吃下第 <b>${state.targetIndex+1}</b> 個字母：<b style="font-size:17px">${letters[state.targetIndex]}</b>`:'完成本字！';
+    $('sequence').innerHTML=letters.split('').map((c,i)=>`<span class="letter-token ${i<state.targetIndex?'done':i===state.targetIndex?'current':''}">${c}<small>${i+1}</small></span>`).join('');
+    draw(); 
   }
+
+  function draw(){ 
+    const width=board.width,height=board.height;
+    ctx.clearRect(0,0,width,height);
+    ctx.fillStyle='#06111f';ctx.fillRect(0,0,width,height);
+    ctx.strokeStyle='#16334a';ctx.lineWidth=1;
+    for(let x=0;x<=COLS;x++){ctx.beginPath();ctx.moveTo(x*CELL,0);ctx.lineTo(x*CELL,height);ctx.stroke();}
+    for(let y=0;y<=ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*CELL);ctx.lineTo(width,y*CELL);ctx.stroke();}
+    
+    state.foods.forEach(f=>{
+      const px=f.x*CELL,py=f.y*CELL,isTarget=f.index===state.targetIndex;
+      if(isTarget){ctx.shadowColor='#38d8ff';ctx.shadowBlur=18;}
+      ctx.fillStyle=isTarget?'#2cdaff':'#263a52';
+      ctx.strokeStyle=isTarget?'#bdf6ff':'#7d91a7';
+      ctx.lineWidth=2;
+      roundRect(ctx,px+7,py+7,CELL-14,CELL-14,8);
+      ctx.fill();ctx.stroke();
+      ctx.shadowBlur=0;
+      ctx.fillStyle=isTarget?'#001521':'#e0ecf7';
+      ctx.font='bold 19px Arial';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText(f.char,px+20,py+20);
+      ctx.font='10px Arial';
+      ctx.fillStyle=isTarget?'#054b64':'#a6b4c5';
+      ctx.fillText(String(f.index+1),px+29,py+12);
+    });
+
+    state.snake.forEach((s,i)=>{
+      const px=s.x*CELL,py=s.y*CELL;
+      ctx.fillStyle=i===0?'#39e4b0':'#13a985';
+      ctx.strokeStyle=i===0?'#c5ffe9':'#62e0c3';
+      ctx.lineWidth=2;
+      roundRect(ctx,px+3,py+3,CELL-6,CELL-6,9);
+      ctx.fill();ctx.stroke();
+      if(i===0){
+        ctx.fillStyle='#00251e';
+        ctx.beginPath();
+        ctx.arc(px+28,py+13,3,0,7);
+        ctx.arc(px+28,py+27,3,0,7);
+        ctx.fill();
+      }
+    });
+
+    if(!state.running){
+      ctx.fillStyle='rgba(3,13,25,.58)';
+      ctx.fillRect(0, height/2-45,width,90);
+      ctx.fillStyle='#64e6ff';
+      ctx.font='900 27px sans-serif';
+      ctx.textAlign='center';
+      ctx.fillText('按方向鍵 [↑ ↓ ← →] 或 [W A S D] 開始！',width/2,height/2-7);
+      ctx.fillStyle='#c4d3e2';
+      ctx.font='14px sans-serif';
+      ctx.fillText('依序尋找並吃掉英文字母，食錯扣 50 分及 1 條命！',width/2,height/2+22);
+    }
+  }
+
   function roundRect(c,x,y,w,h,r){c.beginPath();c.roundRect(x,y,w,h,r);}
   function setDirection(x,y){if(!state.running)start();if(x===-state.direction.x&&y===-state.direction.y)return;state.pending={x,y};}
-  function tick(){state.direction=state.pending;const head={x:state.snake[0].x+state.direction.x,y:state.snake[0].y+state.direction.y};if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||pointTaken(head,state.snake)){wrong('撞到牆壁或自己！扣 50 分。');return;}state.snake.unshift(head);const food=state.foods.find(f=>f.x===head.x&&f.y===head.y);if(!food){state.snake.pop();render();return;}if(food.index===state.targetIndex){state.score+=100+state.combo*10;state.combo++;state.targetIndex++;state.foods=state.foods.filter(f=>f!==food);notify(`答對！吃到 <b>${food.char}</b>，獲得 +${100+(state.combo-1)*10} 分。`);beep(660,.08);if(state.targetIndex===normal(current().word).length){state.completed++;state.score+=250;stop();notify(`完成 ${current().word}！額外獲得 +250 分。`);if(state.wordIndex===WORDS.length-1){render();finish(true);return;}state.wordIndex++;resetWord();setTimeout(()=>{start();},600);return;}}else{wrong(`食錯了！現在需要的是 <b>${normal(current().word)[state.targetIndex]}</b>。`);return;}render();}
-  function wrong(msg){state.score=Math.max(0,state.score-50);state.combo=0;state.lives--;state.errors++;beep(150,.16);notify(msg,true);if(state.lives<=0){render();finish(false);return;}state.snake.pop();render();}
-  function start(){if(state.running)return;state.running=true;if(!startedAt)startedAt=Date.now();timer=setInterval(tick,speed);render();speakCurrent();}
-  function stop(){state.running=false;if(timer){clearInterval(timer);timer=null;}render();}
-  function finish(victory){stop(); if(!savedRun){elapsed=Math.max(1,Math.round((Date.now()-startedAt)/1000));const accuracy=Math.max(0,Math.round(((state.completed*7)/(state.completed*7+state.errors||1))*100));const entry={name:student?.name||'未命名學生',className:student?.className||'-',studentNo:student?.studentNo||'-',score:state.score,completed:state.completed,time:elapsed,accuracy,createdAt:Date.now()};
-    db.ref('snake_hof').push(entry);
-    savedRun=true;
-  }$('endTitle').textContent=victory?'🏆 恭喜完成全部生字！':'遊戲結束';$('endText').textContent=victory?'你已完成 7 個數學英語詞彙，成績已寫入全班雲端 Hall of Fame。':'生命值耗盡，成績已寫入全班雲端 Hall of Fame，下一次可再挑戰更高排名。';$('endScore').textContent=state.score;$('endWords').textContent=state.completed+' 詞';$('endErrors').textContent=state.errors+' 次';$('endTime').textContent=Math.floor(elapsed/60)+'分'+elapsed%60+'秒';setModal('endModal',true);}
+  
+  function tick(){
+    state.direction=state.pending;
+    const head={x:state.snake[0].x+state.direction.x,y:state.snake[0].y+state.direction.y};
+    if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||pointTaken(head,state.snake)){
+      wrong('撞到牆壁或自己！扣 50 分及 1 條生命。');
+      return;
+    }
+    state.snake.unshift(head);
+    const food=state.foods.find(f=>f.x===head.x&&f.y===head.y);
+    if(!food){
+      state.snake.pop();
+      render();
+      return;
+    }
+    if(food.index===state.targetIndex){
+      state.score+=100+state.combo*10;
+      state.combo++;
+      state.targetIndex++;
+      state.foods=state.foods.filter(f=>f!==food);
+      notify(`答對！吃到 <b>${food.char}</b>，獲得 +${100+(state.combo-1)*10} 分。`);
+      beep(660,.08);
+      if(state.targetIndex===normal(current().word).length){
+        state.completed++;
+        state.score+=250;
+        stop();
+        notify(`完成 ${current().word}！額外獲得 +250 分。`);
+        if(state.wordIndex===WORDS.length-1){
+          render();
+          finish(true);
+          return;
+        }
+        state.wordIndex++;
+        resetWord();
+        render();
+        setTimeout(()=>{start();}, 600);
+        return;
+      }
+    }else{
+      wrong(`食錯了！現在需要的是 <b>${normal(current().word)[state.targetIndex]}</b>。`);
+      return;
+    }
+    render();
+  }
 
-  // 男孩美語＋廣東話導讀
+  function wrong(msg){
+    state.score=Math.max(0,state.score-50);
+    state.combo=0;
+    state.lives--;
+    state.errors++;
+    beep(150,.16);
+    notify(msg,true);
+    if(state.lives<=0){
+      render();
+      finish(false);
+      return;
+    }
+    state.snake.pop();
+    render();
+  }
+
+  function start(){if(state.running)return;state.running=true;if(!startedAt)startedAt=Date.now();timer=setInterval(tick,speed);render();}
+  function stop(){state.running=false;if(timer){clearInterval(timer);timer=null;}render();}
+  
+  function finish(victory){
+    stop(); 
+    if(!savedRun){
+      elapsed=Math.max(1,Math.round((Date.now()-startedAt)/1000));
+      const accuracy=Math.max(0,Math.round(((state.completed*7)/(state.completed*7+state.errors||1))*100));
+      const entry={name:student?.name||'未命名學生',className:student?.className||'-',studentNo:student?.studentNo||'-',score:state.score,completed:state.completed,time:elapsed,accuracy,createdAt:Date.now()};
+      db.ref('snake_hof').push(entry);
+      savedRun=true;
+    }
+    $('endTitle').textContent=victory?'🏆 恭喜完成全部生字！':'遊戲結束';
+    $('endText').textContent=victory?'你已完成所有數學英語詞彙，成績已寫入全班雲端 Hall of Fame。':'生命值耗盡，成績已寫入全班雲端 Hall of Fame，下一次可再挑戰更高排名。';
+    $('endScore').textContent=state.score;
+    $('endWords').textContent=state.completed+' 詞';
+    $('endErrors').textContent=state.errors+' 次';
+    $('endTime').textContent=Math.floor(elapsed/60)+'分'+elapsed%60+'秒';
+    setModal('endModal',true);
+  }
+
+  // 男孩聲線中英文朗讀函數
   function speakCurrent(){
-    if(muted)return;
+    if(muted) return;
     window.speechSynthesis?.cancel();
     const word=current().word, meaning=current().chinese;
-    $('voiceStatus').textContent='● 男孩英語＋粵語朗讀中';
+    $('voiceStatus').textContent='● 男孩語音朗讀中...'; 
+    
     const voices=speechSynthesis.getVoices();
-    const maleHints=['male','david','daniel','alex','fred','google us english','george'];
-    const en=voices.find(v=>v.lang.startsWith('en')&&maleHints.some(h=>v.name.toLowerCase().includes(h)))||voices.find(v=>v.lang.startsWith('en'));
-    const yue=voices.find(v=>/hk|yue|cantonese/i.test(v.lang+' '+v.name))||voices.find(v=>v.lang.startsWith('zh'));
+    // 尋找男聲關鍵字（如 male, david, daniel, alex, boy, kangkang, etc.）
+    const maleHints=['boy', 'male', 'david', 'daniel', 'alex', 'fred', 'george', 'sam', 'yunxi', 'kangkang'];
     
-    const u1=new SpeechSynthesisUtterance(word);
-    u1.lang='en-US';
-    u1.rate=.84;
-    if(en) u1.voice=en;
-    
-    const u2=new SpeechSynthesisUtterance(meaning);
-    u2.lang='zh-HK';
-    u2.rate=.9;
-    if(yue) u2.voice=yue;
-    
-    u1.onend=()=>setTimeout(()=>speechSynthesis.speak(u2),280);
-    u2.onend=()=>{$('voiceStatus').textContent='● 男孩英語＋粵語';};
-    u2.onerror=()=>{$('voiceStatus').textContent='● 男孩英語＋粵語';};
-    
+    const enVoice = voices.find(v => v.lang.startsWith('en') && maleHints.some(h => v.name.toLowerCase().includes(h))) || voices.find(v => v.lang.startsWith('en'));
+    const zhVoice = voices.find(v => (v.lang.includes('zh') || v.lang.includes('yue')) && maleHints.some(h => v.name.toLowerCase().includes(h))) || voices.find(v => /hk|yue|cantonese/i.test(v.lang+' '+v.name)) || voices.find(v => v.lang.startsWith('zh'));
+
+    // 男孩語音參數設定：較高的音調 (pitch=1.2) 模擬小男孩語氣
+    const u1 = new SpeechSynthesisUtterance(word);
+    u1.lang = 'en-US';
+    u1.rate = 0.85;
+    u1.pitch = 1.2; 
+    if(enVoice) u1.voice = enVoice;
+
+    const u2 = new SpeechSynthesisUtterance(meaning);
+    u2.lang = 'zh-HK';
+    u2.rate = 0.9;
+    u2.pitch = 1.2; 
+    if(zhVoice) u2.voice = zhVoice;
+
+    u1.onend = () => {
+      setTimeout(() => {
+        speechSynthesis.speak(u2);
+      }, 250);
+    };
+    u2.onend = () => {
+      $('voiceStatus').textContent = '● 男孩聲音：粵語 + 英語';
+    };
+    u2.onerror = () => {
+      $('voiceStatus').textContent = '● 男孩聲音：粵語 + 英語';
+    };
+
     speechSynthesis.speak(u1);
   }
-  
+
   function beep(freq,duration){if(muted)return;try{const a=new AudioContext(),o=a.createOscillator(),g=a.createGain();o.frequency.value=freq;g.gain.setValueAtTime(.04,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+duration);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+duration);}catch{}}
 
-  $('studentButton').onclick=showStudent;$('hofButton').onclick=() => setModal('hofModal',true);$('hofLink').onclick=() => setModal('hofModal',true);$('guideButton').onclick=()=>setModal('guideModal',true);$('startButton').onclick=()=>state.running?stop():start();$('restartButton').onclick=resetGame;$('voiceButton').onclick=speakCurrent;$('speakButton').onclick=speakCurrent;$('openHofEnd').onclick=()=>{setModal('endModal',false);setModal('hofModal',true)};$('playAgain').onclick=()=>{setModal('endModal',false);startedAt=0;resetGame();};$('soundButton').onclick=()=>{muted=!muted;$('soundButton').textContent=muted?'🔇 靜音':'🔊 音效';if(muted)speechSynthesis?.cancel();};
-  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>setModal(b.dataset.close,false));document.querySelectorAll('[data-speed]').forEach(b=>b.onclick=()=>{speed=Number(b.dataset.speed);document.querySelectorAll('[data-speed]').forEach(x=>x.classList.toggle('active',x===b));if(state.running){clearInterval(timer);timer=setInterval(tick,speed);}});
-  $('studentForm').onsubmit=e=>{e.preventDefault();student={name:$('inputName').value.trim(),className:$('inputClass').value.trim().toUpperCase(),studentNo:$('inputNo').value.trim()};localStorage.setItem(profileKey,JSON.stringify(student));updateStudent();setModal('studentModal',false);notify(`歡迎 ${student.name}！準備好挑戰 Hall of Fame。`);speakCurrent();};
-  window.addEventListener('keydown',e=>{const k=e.key.toLowerCase();const map={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]};if(map[k]){e.preventDefault();setDirection(...map[k]);}if(e.code==='Space'){e.preventDefault();state.running?stop():start();}});
-  let swipeStart=null;board.addEventListener('pointerdown',e=>swipeStart={x:e.clientX,y:e.clientY});board.addEventListener('pointerup',e=>{if(!swipeStart)return;const dx=e.clientX-swipeStart.x,dy=e.clientY-swipeStart.y;if(Math.max(Math.abs(dx),Math.abs(dy))>20){if(Math.abs(dx)>Math.abs(dy))setDirection(dx>0?1:-1,0);else setDirection(0,dy>0?1:-1);}swipeStart=null;});
+  $('studentButton').onclick=showStudent;
+  $('hofButton').onclick=() => setModal('hofModal',true);
+  $('hofLink').onclick=() => setModal('hofModal',true);
+  $('guideButton').onclick=()=>setModal('guideModal',true);
+  $('startButton').onclick=()=>state.running?stop():start();
+  $('restartButton').onclick=resetGame;
+  $('voiceButton').onclick=speakCurrent;
+  $('speakButton').onclick=speakCurrent;
+  $('openHofEnd').onclick=()=>{setModal('endModal',false);setModal('hofModal',true)};
+  $('playAgain').onclick=()=>{setModal('endModal',false);startedAt=0;resetGame();};
+  $('soundButton').onclick=()=>{muted=!muted;$('soundButton').textContent=muted?'🔇 靜音':'🔊 音效';if(muted)speechSynthesis?.cancel();};
   
-  if(typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined){
-    speechSynthesis.onvoiceschanged = () => { /* 預先載入語音引擎 */ };
+  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>setModal(b.dataset.close,false));
+  document.querySelectorAll('[data-speed]').forEach(b=>b.onclick=()=>{
+    speed=Number(b.dataset.speed);
+    document.querySelectorAll('[data-speed]').forEach(x=>x.classList.toggle('active',x===b));
+    if(state.running){clearInterval(timer);timer=setInterval(tick,speed);}
+  });
+
+  $('studentForm').onsubmit=e=>{
+    e.preventDefault();
+    student={name:$('inputName').value.trim(),className:$('inputClass').value.trim().toUpperCase(),studentNo:$('inputNo').value.trim()};
+    localStorage.setItem(profileKey,JSON.stringify(student));
+    updateStudent();
+    setModal('studentModal',false);
+    notify(`歡迎 ${student.name}！準備好挑戰 Hall of Fame。`);
+  };
+
+  window.addEventListener('keydown',e=>{
+    const k=e.key.toLowerCase();
+    const map={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]};
+    if(map[k]){e.preventDefault();setDirection(...map[k]);}
+    if(e.code==='Space'){e.preventDefault();state.running?stop():start();}
+  });
+
+  let swipeStart=null;
+  board.addEventListener('pointerdown',e=>swipeStart={x:e.clientX,y:e.clientY});
+  board.addEventListener('pointerup',e=>{
+    if(!swipeStart)return;
+    const dx=e.clientX-swipeStart.x,dy=e.clientY-swipeStart.y;
+    if(Math.max(Math.abs(dx),Math.abs(dy))>20){
+      if(Math.abs(dx)>Math.abs(dy))setDirection(dx>0?1:-1,0);
+      else setDirection(0,dy>0?1:-1);
+    }
+    swipeStart=null;
+  });
+
+  if (speechSynthesis) {
+    speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
   }
   
-  updateStudent();resetGame();if(!student)setTimeout(showStudent,350);
+  updateStudent();
+  resetGame();
+  if(!student)setTimeout(showStudent,350);
 })();
 </script>
 </body>
