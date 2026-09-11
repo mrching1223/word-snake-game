@@ -56,7 +56,6 @@
     .stat span { display:block; font-size:10px; color:#8fa4bf; }
     .stat strong { display:block; margin-top:2px; font: 800 18px monospace; color:var(--gold); }
     
-    /* 修正橫向排列與佈局 */
     .sequence { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px solid #18344b; }
     .sequence-label { color:var(--muted); font-size:13px; white-space:nowrap; }
     #sequence { display:flex; flex-direction:row; align-items:center; gap:8px; flex-wrap:wrap; }
@@ -236,13 +235,18 @@
   function pointTaken(p, occupied=[]){ return occupied.some(q=>q.x===p.x&&q.y===p.y); }
   function randomSpot(occupied=[]){ let p; do{p={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}}while(pointTaken(p,occupied));return p; }
   
+  // 安全重置蛇的防護位置
+  function respawnSnake(){
+    state.snake=[{x:4,y:Math.floor(ROWS/2)},{x:3,y:Math.floor(ROWS/2)},{x:2,y:Math.floor(ROWS/2)}];
+    state.direction={x:1,y:0};
+    state.pending={x:1,y:0};
+  }
+
   // 新生字重置，並自動觸發男孩語音朗讀
   function resetWord(){ 
     const w=normal(WORDS[state.wordIndex].word); 
     state.targetIndex=0; 
-    state.snake=[{x:4,y:Math.floor(ROWS/2)},{x:3,y:Math.floor(ROWS/2)},{x:2,y:Math.floor(ROWS/2)}];
-    state.direction={x:1,y:0};
-    state.pending={x:1,y:0}; 
+    respawnSnake();
     const occupied=[...state.snake];
     state.foods=[]; 
     for(let i=0;i<w.length;i++){
@@ -250,7 +254,6 @@
       state.foods.push({...p,char:w[i],index:i});
     } 
     render(); 
-    // 當有新單字出現時，先由男孩語音自動朗讀
     speakCurrent();
   }
 
@@ -271,7 +274,6 @@
     $('lives').textContent='♥'.repeat(state.lives)+'♡'.repeat(5-state.lives);
     $('target').innerHTML=state.targetIndex<letters.length?`請先吃下第 <b>${state.targetIndex+1}</b> 個字母：<b style="font-size:17px">${letters[state.targetIndex]}</b>`:'完成本字！';
     
-    // 橫向渲染字母 Token 列表
     $('sequence').innerHTML=letters.split('').map((c,i)=>`<span class="letter-token ${i<state.targetIndex?'done':i===state.targetIndex?'current':''}">${c}<small>${i+1}</small></span>`).join('');
     draw(); 
   }
@@ -338,10 +340,15 @@
   function tick(){
     state.direction=state.pending;
     const head={x:state.snake[0].x+state.direction.x,y:state.snake[0].y+state.direction.y};
+    
+    // 牆壁碰撞或撞到自身碰撞檢測
     if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||pointTaken(head,state.snake)){
-      wrong('撞到牆壁或自己！扣 50 分及 1 條生命。');
+      wrong('撞到牆壁或自己！扣 50 分及 1 條生命。', false);
+      respawnSnake(); // 將蛇重置到安全中央起點，避免連續撞牆導致節數消失
+      stop(); // 暫停遊戲，讓玩家重新按鍵操作
       return;
     }
+    
     state.snake.unshift(head);
     const food=state.foods.find(f=>f.x===head.x&&f.y===head.y);
     if(!food){
@@ -373,13 +380,13 @@
         return;
       }
     }else{
-      wrong(`食錯了！現在需要的是 <b>${normal(current().word)[state.targetIndex]}</b>。`);
+      wrong(`食錯了！現在需要的是 <b>${normal(current().word)[state.targetIndex]}</b>。`, true);
       return;
     }
     render();
   }
 
-  function wrong(msg){
+  function wrong(msg, poppedHead = false){
     state.score=Math.max(0,state.score-50);
     state.combo=0;
     state.lives--;
@@ -391,7 +398,9 @@
       finish(false);
       return;
     }
-    state.snake.pop();
+    if(poppedHead){
+      state.snake.shift(); // 移除無效頭部
+    }
     render();
   }
 
@@ -437,12 +446,9 @@
     const voices=speechSynthesis.getVoices();
     const maleHints=['boy', 'male', 'david', 'daniel', 'alex', 'fred', 'george', 'sam', 'yunxi', 'kangkang'];
     
-    // 尋找英語男聲，若找不到則選英文預設語音
     const enVoice = voices.find(v => v.lang.startsWith('en') && maleHints.some(h => v.name.toLowerCase().includes(h))) || voices.find(v => v.lang.startsWith('en'));
-    // 尋找粵語/中文男聲
     const zhVoice = voices.find(v => (v.lang.includes('zh') || v.lang.includes('yue')) && maleHints.some(h => v.name.toLowerCase().includes(h))) || voices.find(v => /hk|yue|cantonese/i.test(v.lang+' '+v.name)) || voices.find(v => v.lang.startsWith('zh'));
 
-    // 男孩聲線參數：pitch 設為 1.2~1.25
     const u1 = new SpeechSynthesisUtterance(w.word);
     u1.lang = 'en-US';
     u1.rate = 0.85;
