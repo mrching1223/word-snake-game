@@ -55,8 +55,12 @@
     .stat { min-width: 87px; padding: 7px 10px; border: 1px solid #263d57; border-radius: 12px; background:#09192a; }
     .stat span { display:block; font-size:10px; color:#8fa4bf; }
     .stat strong { display:block; margin-top:2px; font: 800 18px monospace; color:var(--gold); }
-    .sequence { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px solid #18344b; }
-    .sequence-label { color:var(--muted); font-size:13px; }
+    
+    /* 修正橫向排列與佈局 */
+    .sequence { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:16px; padding-top:14px; border-top:1px solid #18344b; }
+    .sequence-label { color:var(--muted); font-size:13px; white-space:nowrap; }
+    #sequence { display:flex; flex-direction:row; align-items:center; gap:8px; flex-wrap:wrap; }
+    
     .letter-token { width:32px; height:38px; display:grid; place-items:center; position:relative; border-radius:8px; border:1px solid #31455c; background:#132338; color:#9db1c7; font-size:16px; font-weight:900; }
     .letter-token small { position:absolute; bottom:1px; font-size:8px; font-weight:400; color:#7091ac; }
     .letter-token.current { color:#00131c; background:var(--cyan); border-color:#9bf1ff; box-shadow:0 0 0 4px #1cd4ff35,0 0 18px #15c9f488; transform:scale(1.1); }
@@ -69,13 +73,13 @@
     .controls { padding:13px; display:flex; gap:8px; align-items:center; justify-content:space-between; flex-wrap:wrap; border-top:1px solid #23445c; }
     .controls-left, .speed { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
     .speed { font-size:12px; color:var(--muted); }
-    .small-btn { border-radius:9px; padding:7px 10px; border:1px solid #29435d; color:#bdccdc; background:#102033; font-size:12px; }
+    .small-btn { border-radius:99px; padding:7px 12px; border:1px solid #29435d; color:#bdccdc; background:#102033; font-size:12px; }
     .small-btn.active { color:#8ff1ff; border-color:#30cbe9; background:#093348; }
     .side { display:flex; flex-direction:column; gap:14px; }
     .card { padding:15px; }
     .card-title { display:flex; justify-content:space-between; gap:8px; color:#aeeeff; font-weight:800; font-size:13px; margin-bottom:10px; }
     .card-title.gold-text { color:#ffdb77; }
-    .link { color:var(--cyan); font-size:11px; border:0; background:transparent; padding:0; }
+    .link { color:var(--cyan); font-size:11px; border:0; background:transparent; padding:0; cursor:pointer; }
     .hof-empty { padding:16px; border:1px dashed #825f20; border-radius:12px; font-size:12px; color:#a8b6c5; }
     .hof-empty strong { display:block; color:#ffd66e; margin-bottom:5px; }
     .mini-entry { padding:9px; display:flex; align-items:center; justify-content:space-between; gap:8px; border-radius:10px; background:#071322; border:1px solid #182e44; font-size:12px; margin-top:6px; }
@@ -90,7 +94,7 @@
     .modal.open { display:flex; }
     .modal-box { position:relative; width:min(530px,100%); max-height:90vh; overflow:auto; padding:26px; border:1px solid #2c7c95; border-radius:22px; background:linear-gradient(145deg,#0e2239,#06111f); box-shadow:0 24px 70px #000; }
     .modal-box.wide { width:min(760px,100%); }
-    .close { position:absolute; right:13px; top:13px; border:0; border-radius:8px; background:transparent; color:#aabed1; padding:5px; font-size:21px; }
+    .close { position:absolute; right:13px; top:13px; border:0; border-radius:8px; background:transparent; color:#aabed1; padding:5px; font-size:21px; cursor:pointer; }
     .modal h2 { margin:0 0 6px; font-size:23px; }
     .modal p { color:#9eb0c4; font-size:13px; line-height:1.55; }
     .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
@@ -116,7 +120,7 @@
     <header class="header">
       <div class="brand">
         <div class="brand-icon">蛇</div>
-        <div><h1>數學詞彙貪食蛇 • Math Word Snake</h1><p class="tagline">按字母數量排序・男孩語音雙語導讀・5條生命值・全班雲端 Hall of Fame</p></div>
+        <div><h1>數學詞彙貪食蛇 • Math Word Snake</h1><p class="tagline">字母橫向排列・男孩語音雙語導讀・5條生命值・全班雲端 Hall of Fame</p></div>
       </div>
       <div class="header-actions">
         <button class="student-chip" id="studentButton">👤 <span id="studentName">設定學生資料</span></button>
@@ -134,13 +138,29 @@
         </div>
         <div class="stats"><div class="stat"><span>得分 SCORE</span><strong id="score">0</strong></div><div class="stat"><span>連擊 COMBO</span><strong id="combo">x0</strong></div><div class="stat"><span>生命 LIVES</span><strong id="lives">♥♥♥♥♥</strong></div></div>
       </div>
-      <div class="sequence"><span class="sequence-label">拼字進度：</span><div id="sequence"></div><span class="target" id="target">請先吃下第 1 個字母</span></div>
+      <div class="sequence">
+        <span class="sequence-label">拼字進度：</span>
+        <div id="sequence"></div>
+        <span class="target" id="target">請先吃下第 1 個字母</span>
+      </div>
     </section>
 
     <main class="layout">
       <section class="board-wrap">
         <canvas id="board" width="720" height="540" aria-label="貪食蛇棋盤"></canvas>
-        <div class="controls"><div class="controls-left"><button class="button primary" id="startButton">▶ 開始 / 繼續</button><button class="button" id="restartButton">↻ 重玩</button><button class="button" id="voiceButton">🔊 男孩朗讀</button></div><div class="speed"><span>速度：</span><button class="small-btn" data-speed="200">休閒</button><button class="small-btn active" data-speed="145">標準</button><button class="small-btn" data-speed="100">挑戰</button></div></div>
+        <div class="controls">
+          <div class="controls-left">
+            <button class="button primary" id="startButton">▶ 開始 / 繼續</button>
+            <button class="button" id="restartButton">↻ 重玩</button>
+            <button class="button" id="voiceButton">🔊 男孩朗讀</button>
+          </div>
+          <div class="speed">
+            <span>速度：</span>
+            <button class="small-btn" data-speed="200">休閒</button>
+            <button class="small-btn active" data-speed="145">標準</button>
+            <button class="small-btn" data-speed="100">挑戰</button>
+          </div>
+        </div>
       </section>
       <aside class="side">
         <section class="card"><div class="card-title gold-text"><span>🏆 雲端榮譽榜前三名</span><button class="link" id="hofLink">查看前10名</button></div><div id="miniHof"></div></section>
@@ -148,14 +168,14 @@
         <section class="card"><div class="card-title"><span>🎓 數學概念詳解</span><span id="detailNo"></span></div><div class="math-detail"><div id="detailDefinition"></div><div class="example" id="example"></div></div></section>
       </aside>
     </main>
-    <p class="tip">操作提示：[W A S D] 或 [↑ ↓ ← →] 轉向・[空白鍵] 暫停・每局玩家擁有 5 條生命，每當生字出現時會有男孩語音朗讀中英文。</p>
+    <p class="tip">操作提示：[W A S D] 或 [↑ ↓ ← →] 轉向・[空白鍵] 暫停・每局玩家擁有 5 條生命，每當新單字出現時會自動由男孩聲音進行中英雙語朗讀。</p>
   </div>
 
   <div class="modal" id="studentModal"><div class="modal-box"><button class="close" data-close="studentModal">×</button><h2>學生登入 • 進入遊戲</h2><p>請輸入學生資料。完成遊戲後，成績會自動加入全班雲端共享 Hall of Fame 頭 10 名。</p><form id="studentForm"><div class="form-grid"><div class="field full"><label>學生姓名 *</label><input id="inputName" required placeholder="例如：陳大文 (Chan Tai Man)" /></div><div class="field"><label>班別 *</label><input id="inputClass" required value="1A" placeholder="例如：1A" /></div><div class="field"><label>學號 *</label><input id="inputNo" required placeholder="例如：08" /></div></div><button class="button primary form-submit" type="submit">確認並開始挑戰 →</button></form></div></div>
 
   <div class="modal" id="hofModal"><div class="modal-box wide"><button class="close" data-close="hofModal">×</button><h2>🏆 雲端榮譽榜 • Hall of Fame</h2><p>全班頭 10 名排行榜：以最高得分優先，若得分相同則以較短完成時間排名。全班實時同步！</p><div id="hofList"></div></div></div>
 
-  <div class="modal" id="guideModal"><div class="modal-box"><button class="close" data-close="guideModal">×</button><h2>遊戲規則</h2><p><b>1. 生字男孩朗讀：</b>每當有生字出現時，先由男孩語音自動朗讀英文字及中文解釋。</p><p><b>2. 5 條生命：</b>每名玩家有 5 條生命，誤吃錯誤字母會扣除 1 條生命及 50 分。</p><p><b>3. 字母數量排序：</b>生字依據字母數量由少至多排列，字母最少的三字放在最前面。</p><p><b>4. Hall of Fame：</b>完成所有生字或生命耗盡後，成績會寫入雲端排行榜。</p></div></div>
+  <div class="modal" id="guideModal"><div class="modal-box"><button class="close" data-close="guideModal">×</button><h2>遊戲規則</h2><p><b>1. 男孩自動雙語朗讀：</b>每當有新單字出現時，系統會由男孩語音自動朗讀英文字母與中文解釋。</p><p><b>2. 5 條生命：</b>每名玩家有 5 條生命，誤吃錯誤字母或撞牆會扣除 1 條生命及 50 分。</p><p><b>3. 字母數量排序：</b>生字依據字母數量由少至多排列，字母數量少的單字放在最前面。</p><p><b>4. 橫向字母進度：</b>左上方「拼字進度」為橫向一字排開，清晰明確。</p></div></div>
 
   <div class="modal" id="endModal"><div class="modal-box"><button class="close" data-close="endModal">×</button><h2 id="endTitle">遊戲結束</h2><p id="endText"></p><div class="end-summary"><div class="summary">最終得分<strong id="endScore">0</strong></div><div class="summary">完成生字<strong id="endWords">0</strong></div><div class="summary">失誤次數<strong id="endErrors">0</strong></div><div class="summary">遊戲時間<strong id="endTime">0秒</strong></div></div><button class="button primary form-submit" id="openHofEnd">查看 Hall of Fame</button><button class="button form-submit" id="playAgain">再次挑戰</button></div></div>
 
@@ -191,7 +211,7 @@
 
   function normal(word){ return word.replace(/[^a-z]/gi,'').toUpperCase(); }
 
-  // 按字母數量（長度）由小到大排序，確保字母越少的三字放在最前
+  // 按照字母長度由短至長排序
   const WORDS = [...RAW_WORDS].sort((a, b) => normal(a.word).length - normal(b.word).length);
 
   const COLS=18, ROWS=14, CELL=40;
@@ -200,7 +220,6 @@
   const profileKey='math_word_snake_student_profile_v1';
   let student=JSON.parse(localStorage.getItem(profileKey)||'null');
   let muted=false, speed=145, timer=null, startedAt=0, elapsed=0, savedRun=false;
-  // 設置玩家有 5 條命
   let state={wordIndex:0, targetIndex:0, score:0, combo:0, lives:5, errors:0, completed:0, snake:[], direction:{x:1,y:0}, pending:{x:1,y:0}, foods:[], running:false};
 
   function getHof(){ return cloudHof; }
@@ -217,7 +236,7 @@
   function pointTaken(p, occupied=[]){ return occupied.some(q=>q.x===p.x&&q.y===p.y); }
   function randomSpot(occupied=[]){ let p; do{p={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}}while(pointTaken(p,occupied));return p; }
   
-  // 生字出現時觸發 resetWord，同時自動調用男孩朗讀
+  // 新生字重置，並自動觸發男孩語音朗讀
   function resetWord(){ 
     const w=normal(WORDS[state.wordIndex].word); 
     state.targetIndex=0; 
@@ -231,7 +250,8 @@
       state.foods.push({...p,char:w[i],index:i});
     } 
     render(); 
-    speakCurrent(); // 每次生字出現時，先由男孩朗讀中英文字
+    // 當有新單字出現時，先由男孩語音自動朗讀
+    speakCurrent();
   }
 
   function resetGame(){ stop(); state={wordIndex:0,targetIndex:0,score:0,combo:0,lives:5,errors:0,completed:0,snake:[],direction:{x:1,y:0},pending:{x:1,y:0},foods:[],running:false};savedRun=false;elapsed=0; resetWord(); notify('準備開始：按「開始 / 繼續」，然後依序食字。'); }
@@ -248,9 +268,10 @@
     $('example').textContent=w.example;
     $('score').textContent=state.score;
     $('combo').textContent='x'+state.combo;
-    // 渲染 5 條命
     $('lives').textContent='♥'.repeat(state.lives)+'♡'.repeat(5-state.lives);
     $('target').innerHTML=state.targetIndex<letters.length?`請先吃下第 <b>${state.targetIndex+1}</b> 個字母：<b style="font-size:17px">${letters[state.targetIndex]}</b>`:'完成本字！';
+    
+    // 橫向渲染字母 Token 列表
     $('sequence').innerHTML=letters.split('').map((c,i)=>`<span class="letter-token ${i<state.targetIndex?'done':i===state.targetIndex?'current':''}">${c}<small>${i+1}</small></span>`).join('');
     draw(); 
   }
@@ -374,8 +395,19 @@
     render();
   }
 
-  function start(){if(state.running)return;state.running=true;if(!startedAt)startedAt=Date.now();timer=setInterval(tick,speed);render();}
-  function stop(){state.running=false;if(timer){clearInterval(timer);timer=null;}render();}
+  function start(){
+    if(state.running) return;
+    state.running=true;
+    if(!startedAt) startedAt=Date.now();
+    timer=setInterval(tick,speed);
+    render();
+  }
+  
+  function stop(){
+    state.running=false;
+    if(timer){clearInterval(timer);timer=null;}
+    render();
+  }
   
   function finish(victory){
     stop(); 
@@ -395,44 +427,43 @@
     setModal('endModal',true);
   }
 
-  // 男孩聲線中英文朗讀函數
+  // 男孩聲線（男聲音質 + 稍微高少許音調）自動朗讀中英文
   function speakCurrent(){
     if(muted) return;
     window.speechSynthesis?.cancel();
-    const word=current().word, meaning=current().chinese;
+    const w=current();
     $('voiceStatus').textContent='● 男孩語音朗讀中...'; 
     
     const voices=speechSynthesis.getVoices();
-    // 尋找男聲關鍵字（如 male, david, daniel, alex, boy, kangkang, etc.）
     const maleHints=['boy', 'male', 'david', 'daniel', 'alex', 'fred', 'george', 'sam', 'yunxi', 'kangkang'];
     
+    // 尋找英語男聲，若找不到則選英文預設語音
     const enVoice = voices.find(v => v.lang.startsWith('en') && maleHints.some(h => v.name.toLowerCase().includes(h))) || voices.find(v => v.lang.startsWith('en'));
+    // 尋找粵語/中文男聲
     const zhVoice = voices.find(v => (v.lang.includes('zh') || v.lang.includes('yue')) && maleHints.some(h => v.name.toLowerCase().includes(h))) || voices.find(v => /hk|yue|cantonese/i.test(v.lang+' '+v.name)) || voices.find(v => v.lang.startsWith('zh'));
 
-    // 男孩語音參數設定：較高的音調 (pitch=1.2) 模擬小男孩語氣
-    const u1 = new SpeechSynthesisUtterance(word);
+    // 男孩聲線參數：pitch 設為 1.2~1.25
+    const u1 = new SpeechSynthesisUtterance(w.word);
     u1.lang = 'en-US';
     u1.rate = 0.85;
-    u1.pitch = 1.2; 
+    u1.pitch = 1.25; 
     if(enVoice) u1.voice = enVoice;
 
-    const u2 = new SpeechSynthesisUtterance(meaning);
+    const u2 = new SpeechSynthesisUtterance(w.chinese);
     u2.lang = 'zh-HK';
     u2.rate = 0.9;
-    u2.pitch = 1.2; 
+    u2.pitch = 1.25; 
     if(zhVoice) u2.voice = zhVoice;
 
     u1.onend = () => {
       setTimeout(() => {
         speechSynthesis.speak(u2);
-      }, 250);
+      }, 200);
     };
-    u2.onend = () => {
-      $('voiceStatus').textContent = '● 男孩聲音：粵語 + 英語';
-    };
-    u2.onerror = () => {
-      $('voiceStatus').textContent = '● 男孩聲音：粵語 + 英語';
-    };
+
+    const resetBadge = () => { $('voiceStatus').textContent = '● 男孩聲音：粵語 + 英語'; };
+    u2.onend = resetBadge;
+    u2.onerror = resetBadge;
 
     speechSynthesis.speak(u1);
   }
@@ -443,7 +474,14 @@
   $('hofButton').onclick=() => setModal('hofModal',true);
   $('hofLink').onclick=() => setModal('hofModal',true);
   $('guideButton').onclick=()=>setModal('guideModal',true);
-  $('startButton').onclick=()=>state.running?stop():start();
+  $('startButton').onclick=()=>{
+    if(!state.running){
+      start();
+      speakCurrent();
+    } else {
+      stop();
+    }
+  };
   $('restartButton').onclick=resetGame;
   $('voiceButton').onclick=speakCurrent;
   $('speakButton').onclick=speakCurrent;
